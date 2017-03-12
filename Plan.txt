@@ -1,0 +1,8 @@
+- The first time, you had memory leaks after the program ended
+- Ultimately, it just dies in heuristic method
+- Re-plan objects properly 
+- Run valgrind regularly!!!!! - learn how to read it first
+- Do DFS
+- Do BFS
+- Ensure there are no memory leaks - seg fault due to many nodes is OK
+- Try BestFS seperately 
