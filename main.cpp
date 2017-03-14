@@ -7,7 +7,7 @@ To run program: make run
 #include "main.h"
 
 void printState(int [3][3]); 
-void depthFirstSearch(vertex&);
+void depthFirstSearch(vertex&, int maxLevel);
 void breadthFirstSearch(vertex&);
 void bestFirstSearch(char,vertex&);
 bool isGoalState(vertex);
@@ -21,6 +21,7 @@ bool isSameNode(vertex node1, vertex node2);
 int manhattanDistance(int compareState[3][3]);
 int heuristicH(int compareState[3][3]);
 int tilesOutOfPlace(int compareState[3][3]); 
+bool isDuplicateNode (vertex nodeToCheck, vector<vertex> nodeList, vector<vertex> closedList); 
 
 int main()
 {
@@ -97,7 +98,10 @@ int main()
 
  	if (choice == 1)
  	{
- 		depthFirstSearch(initialVertex); 
+ 		int maxLevel = 0; 
+ 		cout<<"What is the maximum level you want the program to run for?"<<endl;
+ 		cin>>maxLevel; 
+ 		depthFirstSearch(initialVertex, maxLevel); 
  	}
  	else if (choice == 2)
  	{

@@ -12,7 +12,6 @@ struct vertex {
   int heuristic; 
   int numOfChildren; 
   //struct vertex* parent; 
-
   int parentIndex; 
   char moveToMakeMe; 
   std::vector<char> movesToGenerateChildren; 
