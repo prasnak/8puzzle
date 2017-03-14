@@ -360,6 +360,7 @@ void bestFirstSearch(char heurChoice, vertex& initialVertex)
         //else begin
 
         if (isGoalState(topVertex)) {
+            cout << "GOAL STATE FOUND! Here is the path going back from the goal state:" << endl;
             printPath(topVertex, nodeList);
             return;
         }
@@ -380,7 +381,6 @@ void bestFirstSearch(char heurChoice, vertex& initialVertex)
 
                 currentChild = childList[numberOfChildren - 1];
                 currentChild.index = nodeList.size() + 1;
-
                 currentChild.parentIndex = parentIndex;
 
                 duplicateOpenIndex = inOpenList(currentChild, nodeList);
@@ -445,15 +445,16 @@ void depthFirstSearch(vertex& initialVertex, int maxLevel)
     while (!openDFSList.empty()) {
 
         vertex topVertex = openDFSList.top();
-   openDFSList.pop();
+        openDFSList.pop();
 
         if (isGoalState(topVertex)) {
+            cout << "GOAL STATE FOUND! Here is the path going back from the goal state:" << endl;
             printPath(topVertex, nodeList);
             return;
         }
         else {
 
-           if (topVertex.depth < maxLevel) {
+            if (topVertex.depth < maxLevel) {
 
                 int parentIndex = topVertex.index;
 
@@ -469,7 +470,8 @@ void depthFirstSearch(vertex& initialVertex, int maxLevel)
 
                     currentChild = childList[numberOfChildren - 1];
                     currentChild.index = nodeList.size();
-                    currentChild.depth = topVertex.depth + 1;
+                    //    currentChild.depth = topVertex.depth + 1;
+                    currentChild.parentIndex = parentIndex;
 
                     if (!isDuplicateNode(currentChild, nodeList, closedList)) {
 
@@ -484,9 +486,9 @@ void depthFirstSearch(vertex& initialVertex, int maxLevel)
             }
             else {
                 cout << endl;
-                cout<<"Couldn't find the goal state within this level. Exiting program."<<endl;
+                cout << "Couldn't find the goal state within this level. Exiting program." << endl;
                 return;
-         }
+            }
         }
     }
 }
@@ -495,6 +497,58 @@ void depthFirstSearch(vertex& initialVertex, int maxLevel)
 void breadthFirstSearch(vertex& initialVertex)
 {
     cout << "Breadth First Search will be performed" << endl;
+    queue<vertex> openBFSList;
+    vector<vertex> nodeList;
+    vector<vertex> closedList; //closed:= []
+
+    initialVertex.discovered = true;
+
+    cout << "Number of children generated: " << initialVertex.index << ", ";
+    nodeList.push_back(initialVertex);
+    openBFSList.push(initialVertex);
+
+    while (!openBFSList.empty()) {
+
+        vertex topVertex = openBFSList.front();
+        openBFSList.pop();
+
+        if (isGoalState(topVertex)) {
+            cout << "GOAL STATE FOUND! Here is the path going back from the goal state:" << endl;
+            printPath(topVertex, nodeList);
+            return;
+        }
+        else {
+
+            int parentIndex = topVertex.index;
+
+            // generate children of X;
+            vector<vertex> childList = generateChildren(topVertex);
+
+            int numberOfChildren = topVertex.numOfChildren;
+
+            closedList.push_back(topVertex);
+            vertex currentChild;
+
+            while (numberOfChildren > 0) {
+
+                currentChild = childList[numberOfChildren - 1];
+                currentChild.index = nodeList.size();
+                //  currentChild.depth = topVertex.depth + 1;
+                currentChild.parentIndex = parentIndex;
+
+                if (!isDuplicateNode(currentChild, nodeList, closedList)) {
+
+                    cout << currentChild.index << ", ";
+                    currentChild.discovered = true;
+                    nodeList.push_back(currentChild);
+                    openBFSList.push(currentChild);
+                }
+
+                numberOfChildren--;
+            }
+        }
+    }
+    cout << "Couldn't find the goal state using Bread First Search. Exiting program." << endl;
 }
 
 #endif
