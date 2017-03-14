@@ -7,7 +7,6 @@
 #include <stack>
 #include <stdlib.h>
 
-using namespace std;
 
 const int ROWS = 3;
 const int COLS = 3;
@@ -247,6 +246,7 @@ bool isSameNode(vertex node1, vertex node2)
     return true;
 }
 
+//Function: Checks to see if a vertex(state) is in the openList (where discovered = true)
 int inOpenList(vertex& checkState, vector<vertex> nodeList)
 {
     for (int i = 0; i < nodeList.size(); i++) {
@@ -260,6 +260,7 @@ int inOpenList(vertex& checkState, vector<vertex> nodeList)
     return -1;
 }
 
+//Function: checks to see if a vertex (state) is in the closedList
 int inClosedList(vertex& checkState, vector<vertex> closedList)
 {
     for (int i = 0; i < closedList.size(); i++) {
@@ -270,6 +271,7 @@ int inClosedList(vertex& checkState, vector<vertex> closedList)
     return -1;
 }
 
+//Function: Checks to see if a vertex (state) is in both the open and closed lists. 
 bool isDuplicateNode(vertex nodeToCheck, vector<vertex> nodeList, vector<vertex> closedList)
 {
     if (inOpenList(nodeToCheck, nodeList) > -1 && inClosedList(nodeToCheck, nodeList) > -1)
@@ -278,6 +280,9 @@ bool isDuplicateNode(vertex nodeToCheck, vector<vertex> nodeList, vector<vertex>
         return false;
 }
 
+/*Function: Calculates the manhattan Distance. "The "Manhattan distance" between 2 squares S1 and S2 is the distance between S1 
+and S2 in the horizontal direction plus the distance between S1 and S2 in the vertical direction. We want to minimize
+the length of solutions."*/
 int manhattanDistance(int compareState[3][3])
 {
     int manhattanDist = 0;
@@ -303,6 +308,12 @@ int manhattanDistance(int compareState[3][3])
     return manhattanDist;
 }
 
+
+/*Function calculates H = totdist + 3*seq where totdist is the manhattan distance.The "sequence score" that measures the
+ degree to which the tiles are already ordered in the current position with respect to the order required in the goal 
+ configuration. seq is computed as the sum of scores for each tileaccording to the following rules:
+A tile in the centre scores 1, A tile on a non-central square scores 0 if the tile is, in the clockwise direction, 
+followed by its proper successor. Such a tile scores 2 if it is not followed by its proper successor.*/
 int heuristicH(int compareState[3][3])
 {
 
@@ -335,12 +346,14 @@ int heuristicH(int compareState[3][3])
         }
     }
 
-
-    int H = manhattanDistance(compareState) + 3*seqScore;
+    int totdist = manhattanDistance(compareState); 
+    int H = totdist + 3*seqScore;
 
     return H;
 }
 
+/*Function: Calculates the tilesOutOfPlace heuristic where it simply counts how many tiles in the comparing state are out of 
+place from those in the goal state*/
 int tilesOutOfPlace(int compareState[3][3])
 {
     int outOfPlaceCount = 0;
@@ -351,7 +364,7 @@ int tilesOutOfPlace(int compareState[3][3])
     return outOfPlaceCount - 1; //to account for the middle tile
 }
 
-//The algorithm based on pseudocode from pg 134 of Artificial Intelligence 6th edition
+//The algorithm is based on pseudocode from pg 134 of Artificial Intelligence 6th edition
 void bestFirstSearch(char heurChoice, vertex& initialVertex)
 {
     cout << "Best First Search will be performed" << endl;
@@ -360,47 +373,35 @@ void bestFirstSearch(char heurChoice, vertex& initialVertex)
 
     vector<vertex> nodeList; //holds all nodes- needed for depth
 
-    vector<vertex> closedList; //closed:= []
+    vector<vertex> closedList; //Algo - closed:= []
     vector<vertex> childList; //holds children once generated
 
-    //Assigning heuristics to the initial node
-    int heurValue = 0;
-    if (heurChoice == 't')
-        heurValue = initialVertex.depth + tilesOutOfPlace(initialVertex.tileState);
-    else if (heurChoice == 'm')
-        heurValue = initialVertex.depth + manhattanDistance(initialVertex.tileState);
-    else
-        heurValue = initialVertex.depth + heuristicH(initialVertex.tileState);
 
-    initialVertex.heuristic = heurValue;
-    //End of ---Assigning heuristics to the initial node
 
- cout << "Number of children generated: " << initialVertex.index << ", ";
+ cout << "Number of states/nodes generated: " << initialVertex.index << ", ";
     initialVertex.discovered = true;
    
 
-    openBestFSList.push(initialVertex); //open:= [Start]
+    openBestFSList.push(initialVertex); //Algo - open:= [Start]
     nodeList.push_back(initialVertex);
 
-    while (!openBestFSList.empty()) //while open != [] do
-    { //begin
-        //remove the leftmost state from open, call it X
-
+    while (!openBestFSList.empty()) //Algo- while open != [] do
+    { 
+        //Algo - remove the leftmost state from open, call it X
         vertex topVertex = openBestFSList.top();
-        openBestFSList.pop();
+        openBestFSList.pop(); 
 
-        // if X = goal, then return the path from Start to X
-        //else begin
+        // Algo = if X = goal, then return the path from Start to X
 
         if (isGoalState(topVertex)) {
-            cout << "GOAL STATE FOUND! Here is the path going back from the goal state:" << endl;
+            cout << "GOAL STATE FOUND! Here is the path to the goal state:" << endl;
             printPath(topVertex, nodeList);
             return;
         }
-        else {
+        else //Algo - else, generate Children of X
+        {
             int parentIndex = topVertex.index;
 
-            // generate children of X;
             childList = generateChildren(topVertex);
 
             int numberOfChildren = topVertex.numOfChildren;
@@ -410,6 +411,7 @@ void bestFirstSearch(char heurChoice, vertex& initialVertex)
             int duplicateOpenIndex = -1; //saves the return value from open list duplicate checks
             int duplicateClosedIndex = -1;
 
+            //Algo - for each child of X, do 
             while (numberOfChildren > 0) {
 
                 currentChild = childList[numberOfChildren - 1];
@@ -419,8 +421,12 @@ void bestFirstSearch(char heurChoice, vertex& initialVertex)
                 duplicateOpenIndex = inOpenList(currentChild, nodeList);
                 duplicateClosedIndex = inClosedList(currentChild, closedList);
 
+                int heurValue = 0;
+
+                //Algo - If the child is not on open or closed lists
                 if (duplicateOpenIndex == -1 && duplicateClosedIndex == -1) {
 
+                    //Algo - assign the child a heuristic value
                     if (heurChoice == 't')
                         heurValue = currentChild.depth + tilesOutOfPlace(currentChild.tileState);
                     else if (heurChoice == 'm')
@@ -431,75 +437,95 @@ void bestFirstSearch(char heurChoice, vertex& initialVertex)
                     currentChild.heuristic = heurValue;
 
                      cout << currentChild.index << ", ";
-                    currentChild.discovered = true;
 
-                    openBestFSList.push(currentChild); //child added to right end of open queue
+                     //Algo - add the child to open 
+                    currentChild.discovered = true;
+                    openBestFSList.push(currentChild);
                     nodeList.push_back(currentChild);
                 }
 
-                if (duplicateOpenIndex > -1) { //if new child was reached by a shorter path
-                    if (currentChild.heuristic < nodeList[duplicateOpenIndex].heuristic) { //          openBestFSList.push(nodeList[indexHolder]);
+                if (duplicateOpenIndex > -1) //Algo - If child is already on open 
+                { 
 
+                    //Algo - if new child was reached by a shorter path
+                    if (currentChild.heuristic < nodeList[duplicateOpenIndex].heuristic) { 
+
+                        //Algo - Then give the state on open the shorter path
+                        //Note to self: The reason you pushed the child instead of adjusting the path is because, it's too complex
+                        //to try to pop and push the pq until the duplicate child is found. Instead, adding the same child with a 
+                        //dif heuristic and index will be adjusted accordingly in the heap just as though the original heuristics
+                        //was updated. 
                         openBestFSList.push(currentChild);
                         nodeList[duplicateOpenIndex].heuristic = currentChild.heuristic;
                     }
                 }
 
-                if (duplicateClosedIndex > -1) {
-                    //if new child was reached by a shorter path
+                if (duplicateClosedIndex > -1)  //Algo - If the child is already on closed
+                { 
+                    //Algo if new child was reached by a shorter path
                     if (currentChild.heuristic < closedList[duplicateClosedIndex].heuristic) {
-                        //DEV - REMOVE STATE FROM CLOSED LIST - NOT SURE HOW TO DO THIS YET.....
+                        //DEV - Algo - REMOVE STATE FROM CLOSED LIST - 
+                        //Algo - add the child to open
                         openBestFSList.push(currentChild);
                     }
                 }
 
-                numberOfChildren--;
+                numberOfChildren--; //to iterate through children generated
             }
 
+            //Algo - put X on closed
             closedList.push_back(topVertex);
-        }
-    }
+        } //else - not goal state
+
+        //Algo - re-order states on open by heuristic merit (leftmost) - done automatically by min heap
+
+    }// while - open list is not empty
+        //Algo - return FAIL
         cout << "Couldn't find the goal state using Best First Search. Exiting program." << endl;
 }
 
-//The algorithm based on pseudocode from pg 102 of Artificial Intelligence 6th edition
+//The algorithm is based on pseudocode from pg 102 of Artificial Intelligence 6th edition
 void depthFirstSearch(vertex& initialVertex, int maxLevel)
 {
     cout << "Depth First Search will be performed" << endl;
 
     stack<vertex> openDFSList;
     vector<vertex> nodeList;
-    vector<vertex> closedList; //closed:= []
+    vector<vertex> closedList; //Algo - closed:= []
 
 
-cout << "Number of children generated: " << initialVertex.index << ", ";
+cout << "Number of states/nodes generated: " << initialVertex.index << ", ";
     initialVertex.discovered = true;
 
     
     nodeList.push_back(initialVertex);
-    openDFSList.push(initialVertex);
+    openDFSList.push(initialVertex); //Algo - open := [Start]
 
+    //Algo - while open != [] do
     while (!openDFSList.empty()) {
 
+        //Algo - remove leftmost state from open, call it X
         vertex topVertex = openDFSList.top();
         openDFSList.pop();
 
+        //Algo - If X is a goal, then return SUCCESS
         if (isGoalState(topVertex)) {
-            cout << "GOAL STATE FOUND! Here is the path going back from the goal state:" << endl;
+            cout << "GOAL STATE FOUND! Here is the path to the goal state:" << endl;
             printPath(topVertex, nodeList);
             return;
         }
-        else {
+        else //Algo - else, generate children of X
+        {
 
             if (topVertex.depth < maxLevel) {
 
                 int parentIndex = topVertex.index;
 
-                // generate children of X;
+                //Algo - generate children of X;
                 vector<vertex> childList = generateChildren(topVertex);
 
                 int numberOfChildren = topVertex.numOfChildren;
-
+                //Algo - put X on closed
                 closedList.push_back(topVertex);
                 vertex currentChild;
 
@@ -510,6 +536,8 @@ cout << "Number of children generated: " << initialVertex.index << ", ";
                     //    currentChild.depth = topVertex.depth + 1;
                     currentChild.parentIndex = parentIndex;
 
+                    //Algo - discard children of X if already in open or closed
+                    //Algo - put remaining children on left end of open
                     if (!isDuplicateNode(currentChild, nodeList, closedList)) {
 
                         cout << currentChild.index << ", ";
@@ -522,6 +550,7 @@ cout << "Number of children generated: " << initialVertex.index << ", ";
                 }
             }
             else {
+                //Algo - return FAIL
                 cout << "Couldn't find the goal state within this level. Exiting program." << endl;
                 return;
             }
@@ -529,7 +558,7 @@ cout << "Number of children generated: " << initialVertex.index << ", ";
     }
 }
 
-//The algorithm based on pseudocode from pg 100 of Artificial Intelligence 6th edition
+//The algorithm is based on pseudocode from pg 100 of Artificial Intelligence 6th edition
 void breadthFirstSearch(vertex& initialVertex)
 {
     cout << "Breadth First Search will be performed" << endl;
@@ -538,7 +567,9 @@ void breadthFirstSearch(vertex& initialVertex)
     vector<vertex> closedList; //closed:= []
 
 
-cout << "Number of children generated: " << initialVertex.index << ", ";
+cout << "Number of states/nodes generated: " << initialVertex.index << ", ";
+
+
     initialVertex.discovered = true;
 
     
@@ -551,7 +582,7 @@ cout << "Number of children generated: " << initialVertex.index << ", ";
         openBFSList.pop();
 
         if (isGoalState(topVertex)) {
-            cout << "GOAL STATE FOUND! Here is the path going back from the goal state:" << endl;
+            cout << "GOAL STATE FOUND! Here is the path to the goal state:" << endl;
             printPath(topVertex, nodeList);
             return;
         }

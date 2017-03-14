@@ -84,9 +84,9 @@ int main()
  	cout<<"Which search method would you like to use to find the solution?"<<endl;
  	cout<<"1 - Depth First Search"<<endl;
  	cout<<"2 - Breadth First Search"<<endl;
- 	cout<<"3 - Tiles out of space heuristic"<<endl;
- 	cout<<"4 - Moves to get to goal state heuristic"<<endl;
- 	cout<<"5 - Manhattan distance + Sequence Score heuristic"<<endl;
+ 	cout<<"3 - BestFS - Tiles out of space heuristic"<<endl;
+ 	cout<<"4 - BestFS - Moves to get to goal state heuristic"<<endl;
+ 	cout<<"5 - BestFS - Manhattan distance + Sequence Score heuristic"<<endl;
  	cout<<"Your choice: "; 
  	cin>>choice; 
 

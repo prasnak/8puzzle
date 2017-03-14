@@ -2,7 +2,7 @@
 #define GRAPH_H
 
 #include <vector>
-
+using namespace std;
 
 struct vertex {
 
