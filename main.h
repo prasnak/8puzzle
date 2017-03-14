@@ -4,6 +4,7 @@
 #include <iostream>
 #include "graph.h"
 #include <queue>
+#include <stdlib.h>
 
 using namespace std;
 
