@@ -1,7 +1,4 @@
 /*
-  Prasuna Kunasani
-  200285299
-  CS421 Assignment 2
   Assumptions: That the state being entered is in the correct format as prompted. This means, a blank (0) is expected
   To run program: make run
 */
