@@ -533,7 +533,6 @@ cout << "Number of states/nodes generated: " << initialVertex.index << ", ";
 
                     currentChild = childList[numberOfChildren - 1];
                     currentChild.index = nodeList.size();
-                    //    currentChild.depth = topVertex.depth + 1;
                     currentChild.parentIndex = parentIndex;
 
                     //Algo - discard children of X if already in open or closed
@@ -564,7 +563,7 @@ void breadthFirstSearch(vertex& initialVertex)
     cout << "Breadth First Search will be performed" << endl;
     queue<vertex> openBFSList;
     vector<vertex> nodeList;
-    vector<vertex> closedList; //closed:= []
+    vector<vertex> closedList; //Algo - closed:= []
 
 
 cout << "Number of states/nodes generated: " << initialVertex.index << ", ";
@@ -574,27 +573,31 @@ cout << "Number of states/nodes generated: " << initialVertex.index << ", ";
 
     
     nodeList.push_back(initialVertex);
-    openBFSList.push(initialVertex);
+    openBFSList.push(initialVertex); //Algo - open:= [Start]
 
+    //Algo - while open != [] do
     while (!openBFSList.empty()) {
 
+        //Algo - remove leftmost state from open, call it X
         vertex topVertex = openBFSList.front();
         openBFSList.pop();
 
+        //Algo - if X is a goal, then return SUCCESS
         if (isGoalState(topVertex)) {
             cout << "GOAL STATE FOUND! Here is the path to the goal state:" << endl;
             printPath(topVertex, nodeList);
             return;
         }
-        else {
+        else  //Algo - else - generate children of X
+        { 
 
             int parentIndex = topVertex.index;
 
-            // generate children of X;
             vector<vertex> childList = generateChildren(topVertex);
 
             int numberOfChildren = topVertex.numOfChildren;
 
+            //Algo - put X on closed
             closedList.push_back(topVertex);
             vertex currentChild;
 
@@ -602,9 +605,10 @@ cout << "Number of states/nodes generated: " << initialVertex.index << ", ";
 
                 currentChild = childList[numberOfChildren - 1];
                 currentChild.index = nodeList.size();
-                //  currentChild.depth = topVertex.depth + 1;
                 currentChild.parentIndex = parentIndex;
 
+            //Algo - discard children of X if already in open or closed
+                    //Algo - put remaining children on right end of open
                 if (!isDuplicateNode(currentChild, nodeList, closedList)) {
 
                     cout << currentChild.index << ", ";
@@ -617,6 +621,7 @@ cout << "Number of states/nodes generated: " << initialVertex.index << ", ";
             }
         }
     }
+    //Algo - return FAIL
     cout << "Couldn't find the goal state using Bread First Search. Exiting program." << endl;
 }
 

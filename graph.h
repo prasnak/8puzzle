@@ -4,6 +4,7 @@
 #include <vector>
 using namespace std;
 
+//A vertex that holds the tile state and other information used by the main program. 
 struct vertex {
 
   int index; //substitute for a name

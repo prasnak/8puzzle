@@ -1,13 +1,15 @@
 /*
 Prasuna Kunasani
-Assumptions: That the state being entered is in the correct format as prompted. 
+200285299
+CS421 Assignment 2
+Assumptions: That the state being entered is in the correct format as prompted. This means, a blank (0) is expected
 To run program: make run
  */
 
 #include "main.h"
 
 void printState(int [3][3]); 
-void depthFirstSearch(vertex&, int maxLevel);
+void depthFirstSearch(vertex&, int);
 void breadthFirstSearch(vertex&);
 void bestFirstSearch(char,vertex&);
 bool isGoalState(vertex);
@@ -15,13 +17,13 @@ void printPath(vertex, vector<vertex>);
 void initializeChild(vertex, vertex&,int,int); 
 void generateMoves(vertex&); 
 vector<vertex> generateChildren(vertex&);
-int inClosedList(vertex& checkState, vector<vertex> closedList);
-int inOpenList(vertex& checkState, vector<vertex> nodeList); 
-bool isSameNode(vertex node1, vertex node2);
+int inClosedList(vertex&, vector<vertex>);
+int inOpenList(vertex& , vector<vertex>); 
+bool isSameNode(vertex , vertex );
 int manhattanDistance(int compareState[3][3]);
 int heuristicH(int compareState[3][3]);
 int tilesOutOfPlace(int compareState[3][3]); 
-bool isDuplicateNode (vertex nodeToCheck, vector<vertex> nodeList, vector<vertex> closedList); 
+bool isDuplicateNode (vertex , vector<vertex>, vector<vertex>); 
 
 int main()
 {
@@ -30,20 +32,19 @@ int main()
 	char input[9]; 
 	int choice;
 
- 	//int initState[ROWS][COLS] = {{1,2,3},{4,5,6},{7,8,9}}; //correct code. uncomment when the next line is commented. 
- 	int initState[ROWS][COLS] = {{1,3,4},{8,6,2},{7,5,0}}; //for testing purposes - else, the user enters. 
+ 	int initState[ROWS][COLS] = {{1,2,3},{4,5,6},{7,8,9}}; //correct code. uncomment when the next line is commented. 
+ 	
+ 	//int initState[ROWS][COLS] = {{1,3,4},{8,6,2},{7,5,0}}; //for testing purposes - else, the user enters. 
 	//int initState[ROWS][COLS] = {{1,2,3},{8,0,4},{7,6,5}}; //Note: same as goal state
+    //int initState[ROWS][COLS] = {{2,8,1},{4,3,0},{7,6,5}}; //Note:  testing - med
+    //int initState[ROWS][COLS] = {{2,8,1},{4,6,3},{7,5,0}}; //Note:  testing - hard
+    //int initState[ROWS][COLS] = {{5,6,7},{4,8,0},{3,2,1}}; //Note: testing - very hard
+    //int initState[ROWS][COLS] = {{1,3,0},{8,2,4},{7,6,5}}; //Note:  testing - very easy (expect for DFS)
 
-	  //    int initState[rows][cols] = {{1,3,4},{8,6,2},{7,5,0}}; //Note: DELETE once done testing - easy
-  //  int initState[rows][cols] = {{2,8,1},{4,3,0},{7,6,5}}; //Note: DELETE once done testing - med
-  //  int initState[rows][cols] = {{2,8,1},{4,6,3},{7,5,0}}; //Note: DELETE once done testing - hard
-  //  int initState[rows][cols] = {{5,6,7},{4,8,0},{3,2,1}}; //Note: DELETE once done testing - very hard
-  //int initState[rows][cols] = {{1,3,0},{8,2,4},{7,6,5}}; //Note: DELETE once done testing - very easy
-
- 	cout<<"The positions of states are layed out as follows::::::::"<<endl;
+ 	cout<<"The positions of states are layed out as follows---------->"<<endl;
  	printState(initState);
 
-/*  TESTING - COMMENTED OUT SO YOU DON'T HAVE TO TYPE EACH TIME
+//  TESTING - COMMENT SO YOU DON'T HAVE TO TYPE EACH TIME
  	cout<<"Please enter the initial state using numbers 1-8 and 0 for space:"<<endl;
  	do
  	{
@@ -76,7 +77,7 @@ int main()
  	cout<<"You entered: "<<endl;
  	printState(initState);
 
-*/
+//TESTING - Comment till here so you don't have to try the state each time. 
 
  	vertex initialVertex = {}; //will zero all fields
 	initialVertex.setTileState(initState);  
