@@ -1,3 +1,9 @@
+/*
+Prasuna Kunasani
+Assumptions: That the state being entered is in the correct format as prompted. 
+To run program: make run
+ */
+
 #include "main.h"
 
 void printState(int [3][3]); 
@@ -25,7 +31,13 @@ int main()
 
  	//int initState[ROWS][COLS] = {{1,2,3},{4,5,6},{7,8,9}}; //correct code. uncomment when the next line is commented. 
  	int initState[ROWS][COLS] = {{1,3,4},{8,6,2},{7,5,0}}; //for testing purposes - else, the user enters. 
-	//int initState[ROWS][COLS] = {{1,2,3},{8,0,4},{7,6,5}};
+	//int initState[ROWS][COLS] = {{1,2,3},{8,0,4},{7,6,5}}; //Note: same as goal state
+
+	  //    int initState[rows][cols] = {{1,3,4},{8,6,2},{7,5,0}}; //Note: DELETE once done testing - easy
+  //  int initState[rows][cols] = {{2,8,1},{4,3,0},{7,6,5}}; //Note: DELETE once done testing - med
+  //  int initState[rows][cols] = {{2,8,1},{4,6,3},{7,5,0}}; //Note: DELETE once done testing - hard
+  //  int initState[rows][cols] = {{5,6,7},{4,8,0},{3,2,1}}; //Note: DELETE once done testing - very hard
+  //int initState[rows][cols] = {{1,3,0},{8,2,4},{7,6,5}}; //Note: DELETE once done testing - very easy
 
  	cout<<"The positions of states are layed out as follows::::::::"<<endl;
  	printState(initState);
