@@ -305,7 +305,38 @@ int manhattanDistance(int compareState[3][3])
 
 int heuristicH(int compareState[3][3])
 {
-    int H = manhattanDistance(compareState);
+
+    int seqScore = 0; 
+
+    //Hard coded method to find sequence score
+
+    for (int i=0; i<ROWS; i++)
+    {
+        for (int j=0; j<COLS; j++)
+        {
+            if ((i==0 && j==0) && (compareState[0][1] != goalState[0][1]))
+                seqScore =  seqScore + 2; 
+            else if ((i==0 && j==1) && (compareState[0][2] != goalState[0][2]))
+                  seqScore =  seqScore + 2; 
+            else if ((i==0 && j==2) && (compareState[1][2] != goalState[1][2]))
+                  seqScore =  seqScore + 2; 
+           else if ((i==1 && j==0) && (compareState[0][0] != goalState[0][0]))
+                 seqScore =  seqScore + 2; 
+           else if (i==1 && j==1) 
+                 seqScore =  seqScore + 1; 
+           else if ((i==1 && j==2) && (compareState[2][2] != goalState[2][2]))
+                  seqScore =  seqScore + 2; 
+           else if ((i==2 && j==0) && (compareState[1][0] != goalState[1][0]))
+                 seqScore =  seqScore + 2; 
+           else if ((i==2 && j==1) && (compareState[2][0] != goalState[2][0]))
+                  seqScore =  seqScore + 2; 
+           else if ((i==2 && j==2) && (compareState[2][1] != goalState[2][1]))
+                 seqScore =  seqScore + 2; 
+        }
+    }
+
+
+    int H = manhattanDistance(compareState) + 3*seqScore;
 
     return H;
 }
@@ -344,7 +375,9 @@ void bestFirstSearch(char heurChoice, vertex& initialVertex)
     initialVertex.heuristic = heurValue;
     //End of ---Assigning heuristics to the initial node
 
+ cout << "Number of children generated: " << initialVertex.index << ", ";
     initialVertex.discovered = true;
+   
 
     openBestFSList.push(initialVertex); //open:= [Start]
     nodeList.push_back(initialVertex);
@@ -380,7 +413,7 @@ void bestFirstSearch(char heurChoice, vertex& initialVertex)
             while (numberOfChildren > 0) {
 
                 currentChild = childList[numberOfChildren - 1];
-                currentChild.index = nodeList.size() + 1;
+                currentChild.index = nodeList.size();
                 currentChild.parentIndex = parentIndex;
 
                 duplicateOpenIndex = inOpenList(currentChild, nodeList);
@@ -397,6 +430,7 @@ void bestFirstSearch(char heurChoice, vertex& initialVertex)
 
                     currentChild.heuristic = heurValue;
 
+                     cout << currentChild.index << ", ";
                     currentChild.discovered = true;
 
                     openBestFSList.push(currentChild); //child added to right end of open queue
@@ -425,6 +459,7 @@ void bestFirstSearch(char heurChoice, vertex& initialVertex)
             closedList.push_back(topVertex);
         }
     }
+        cout << "Couldn't find the goal state using Best First Search. Exiting program." << endl;
 }
 
 //The algorithm based on pseudocode from pg 102 of Artificial Intelligence 6th edition
@@ -436,9 +471,11 @@ void depthFirstSearch(vertex& initialVertex, int maxLevel)
     vector<vertex> nodeList;
     vector<vertex> closedList; //closed:= []
 
+
+cout << "Number of children generated: " << initialVertex.index << ", ";
     initialVertex.discovered = true;
 
-    cout << "Number of children generated: " << initialVertex.index << ", ";
+    
     nodeList.push_back(initialVertex);
     openDFSList.push(initialVertex);
 
@@ -485,7 +522,6 @@ void depthFirstSearch(vertex& initialVertex, int maxLevel)
                 }
             }
             else {
-                cout << endl;
                 cout << "Couldn't find the goal state within this level. Exiting program." << endl;
                 return;
             }
@@ -501,9 +537,11 @@ void breadthFirstSearch(vertex& initialVertex)
     vector<vertex> nodeList;
     vector<vertex> closedList; //closed:= []
 
+
+cout << "Number of children generated: " << initialVertex.index << ", ";
     initialVertex.discovered = true;
 
-    cout << "Number of children generated: " << initialVertex.index << ", ";
+    
     nodeList.push_back(initialVertex);
     openBFSList.push(initialVertex);
 
